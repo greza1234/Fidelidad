@@ -1,0 +1,891 @@
+/* ---------- Tema claro / oscuro ---------- */
+
+:root {
+  --bg-main: #e5f5eb;
+  --bg-surface: #f3f4f6;
+  --bg-card: #ffffff;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+}
+
+:root[data-theme="dark"] {
+  --bg-main: #020617;
+  --bg-surface: #020617;
+  --bg-card: #020617;
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+}
+
+/* GLOBAL: body y root para ocupar toda la pantalla */
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg-main);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: var(--text-main);
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Splash Ice Mánkora - pantalla completa */
+
+.splash-container {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #19b653; /* verde para TODO el fondo */
+}
+
+.splash-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* LOGO centrado con animación */
+.splash-logo {
+  width: 300px; /* ajusta el tamaño si quieres */
+  max-width: 70vw;
+  height: auto;
+  margin-bottom: 24px;
+  animation: splash-logo-pop 900ms ease-out forwards;
+}
+
+/* animación del logo: aparece suave, sube un poco y hace un pequeño "pop" */
+@keyframes splash-logo-pop {
+  0% {
+    transform: translateY(10px) scale(0.9);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(0) scale(1.03);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* tres puntitos debajo del logo */
+.splash-dots {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.splash-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #eeeff1;
+  animation: splash-bounce 1s infinite ease-in-out;
+}
+
+.splash-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.splash-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes splash-bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.3);
+    opacity: 0.4;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ---------- Auth Ice Mánkora ---------- */
+
+.auth-root {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 16px;
+  background: transparent; /* usamos el fondo del body */
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--bg-card);
+  border-radius: 32px;
+  padding: 24px 24px 32px;
+  box-shadow: 0 18px 40px rgba(15, 118, 110, 0.15);
+}
+
+.auth-logo-img {
+  width: 120px;
+  height: auto;
+  display: block;
+  margin: 0 auto 12px auto;
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.auth-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.auth-input-wrapper {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+  background: var(--bg-card);
+  color: var(--text-main);
+}
+
+.auth-input:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.2);
+  background: var(--bg-card);
+}
+
+.auth-password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 70%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.auth-button-primary {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: none;
+  background: #16a34a;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.auth-button-primary:hover {
+  background: #15803d;
+}
+
+.auth-or {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 16px 0 10px;
+}
+
+/* Botón Google con icono oficial */
+.auth-google-btn {
+  width: 100%;
+  padding: 10px 10px;
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-main);
+}
+
+.auth-google-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Puedes dejar esta clase por si la usas en otro lado;
+   ya no es necesaria para el botón de Google actual */
+.auth-google-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #4285f4; /* azul Google */
+  font-size: 14px;
+}
+
+.auth-footer-text {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.auth-footer-link {
+  color: #16a34a;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 4px;
+}
+
+.auth-footer-link:hover {
+  text-decoration: underline;
+}
+
+.auth-error {
+  color: #b91c1c;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.auth-success {
+  color: #15803d;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* ----------- Pantalla cliente (fidelidad) ----------- */
+
+.client-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 16px 80px; /* espacio abajo para la barra */
+  background: var(--bg-surface);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.client-card {
+  flex: 1;
+  width: 100%;
+  padding-top: 16px;
+}
+
+/* ---------- (HEADER ANTIGUO) ---------- */
+
+.client-header {
+  margin: 0 -16px;
+  padding: 16px 24px 22px;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  border-bottom-left-radius: 28px;
+  color: #ffffff;
+}
+
+.client-header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.client-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.client-header-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: transparent;
+  padding: 4px;
+  object-fit: contain;
+}
+
+.client-header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.client-header-title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.client-header-subtitle {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+/* Botón cerrar sesión en el header */
+
+.client-header-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.client-header-logout:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.client-header-logout-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.client-header-logout-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.client-header-logout-label {
+  white-space: nowrap;
+}
+
+/* Loading simple */
+
+.client-loading {
+  width: 100%;
+  text-align: center;
+  margin-top: 40px;
+  color: var(--text-muted);
+}
+
+/* Títulos */
+
+.client-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.client-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+
+/* Tarjeta de fidelidad */
+
+.loyalty-card {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  border-radius: 20px;
+  padding: 16px 14px;
+  color: #ffffff;
+  margin-bottom: 18px;
+  box-shadow: 0 12px 25px rgba(22, 163, 74, 0.35);
+}
+
+.loyalty-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.loyalty-card-title {
+  font-weight: 600;
+}
+
+.loyalty-card-reward {
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.loyalty-dots {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+/* Círculos más grandes y fondo blanco */
+.loyalty-dot {
+  width: 42px;              /* antes 32px */
+  height: 42px;
+  border-radius: 999px;
+  border: 2px dashed rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  background: #ffffff;      /* fondo blanco */
+  color: #16a34a;           /* color del emoji cuando esté lleno */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Pequeño efecto al pasar el dedo / mouse */
+.loyalty-dot:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+}
+
+
+.loyalty-dot--filled {
+  border-style: solid;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+@keyframes stamp-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Punto lleno (🎁) con animación */
+.loyalty-dot--filled {
+  border-style: solid;
+  border-color: #ffffff;
+  background: #ffffff;
+  animation: stamp-pop 0.35s ease-out;
+}
+
+
+/* Progreso */
+
+.loyalty-progress {
+  margin-top: 4px;
+}
+
+.loyalty-progress-bar {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.loyalty-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+  transition: width 0.3s ease-out;
+}
+
+.loyalty-progress-text {
+  font-size: 13px;
+  color: var(--text-main);
+}
+
+/* Botón cerrar sesión */
+
+.client-logout {
+  margin-top: 18px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: none;
+  background: var(--bg-surface);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.client-logout:hover {
+  background: #e5e7eb;
+}
+
+/* QR */
+
+.qr-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.qr-box {
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 24px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+}
+
+/* Borde verde alrededor del QR */
+.qr-box--green {
+  border: 4px solid #16a34a;
+}
+
+/* Texto debajo del QR centrado */
+.qr-caption {
+  text-align: center;
+  margin-top: 12px;
+}
+
+
+/* Mensajes */
+
+.messages-empty {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--bg-surface);
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* Barra de navegación inferior */
+
+.client-bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.bottom-nav-pill {
+  pointer-events: auto;
+  max-width: 360px;
+  width: 100%;
+  padding: 6px 10px;
+  background: #16a34a; /* verde */
+  border-radius: 999px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 10px 25px rgba(22, 163, 74, 0.35);
+}
+
+.bottom-nav-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 0;
+  cursor: pointer;
+}
+
+/* Icono */
+.bottom-nav-icon-wrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+/* Texto pequeño */
+.bottom-nav-label {
+  font-size: 14px;
+  color: #e8f5e9; /* se ve bien en ambos temas */
+  font-weight: 500;
+}
+
+/* Activo: icono en círculo blanco elevado + texto verde fuerte */
+.bottom-nav-btn--active .bottom-nav-icon-wrapper {
+  background: #ffffff;
+  color: #16a34a;
+  transform: translateY(-8px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
+
+.bottom-nav-btn--active .bottom-nav-label {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.bottom-nav-icon {
+  font-size: 22px;
+}
+
+.bottom-nav-icon-wrapper svg {
+  width: 60px;
+  height: 60px;
+}
+
+.complete-profile-title,
+.complete-profile-subtitle {
+  text-align: center;
+}
+
+/* ---------- NUEVO TOPBAR (HEADER) TIPO APP BAR ---------- */
+
+.client-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0 8px;
+  position: relative;
+
+  /* NUEVO: línea sutil para separar header del contenido */
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+  margin-bottom: 8px;
+}
+
+
+.client-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.client-topbar-logo {
+  width: 70px;
+  height: 70px;
+  border-radius: 16px;
+  object-fit: contain;
+}
+
+.client-topbar-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.client-topbar-brand {
+  font-size: 12px;
+  font-weight: 700;
+  color: green; /* se mantiene verde en ambos temas */
+}
+
+.client-topbar-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.client-topbar-right {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* Avatar circular con iniciales */
+
+.client-avatar-btn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.client-avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #16a34a;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4);
+}
+
+/* Dropdown del perfil */
+
+.client-profile-menu {
+  position: absolute;
+  top: 42px;
+  right: 0;
+  background: var(--bg-card);
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+  padding: 12px;
+  min-width: 210px;
+  z-index: 50;
+}
+
+.client-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.client-profile-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #16a34a;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.client-profile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.client-profile-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.client-profile-role {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.client-profile-section {
+  border-top: 1px solid rgba(148, 163, 184, 0.25);
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.client-profile-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.client-theme-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.client-theme-option {
+  width: 100%;
+  border-radius: 999px;
+  border: none;
+  padding: 6px 10px;
+  background: transparent;
+  text-align: left;
+  font-size: 13px;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.client-theme-option--active {
+  background: rgba(22, 163, 74, 0.1);
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.client-theme-current {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.client-profile-logout {
+  margin-top: 10px;
+  width: 100%;
+  border-radius: 12px;
+  border: none;
+  padding: 8px 10px;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ------- Tarjeta de escaneo del staff ------- */
+
+/* CUADRO ÚNICO donde aparece cámara */
+.staff-scan-frame {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 4 / 3;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #08a442, #52d582);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(22, 163, 74, 0.35);
+}
+
+/* Línea animada */
+.staff-scan-line {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.9);
+  animation: staff-scan-move 1.2s linear infinite;
+}
+
+@keyframes staff-scan-move {
+  0% { transform: translateY(-150%); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translateY(0%); opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(150%); opacity: 0; }
+}
+
+.staff-scan-icon {
+  width: 96px;
+  height: 96px;
+  color: #063b20;
+  z-index: 1;
+}
+
+.staff-scan-hint {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #6b7280;
+}
