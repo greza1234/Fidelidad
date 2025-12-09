@@ -5,9 +5,10 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    // 👉 No guardar la sesión en localStorage
-    persistSession: false,
-    // (opcional, normalmente ya está en true por defecto)
+    // ✅ Mantener sesión mientras la pestaña esté abierta (incluye F5 / refresh)
+    // pero se borra cuando cierras la pestaña/navegador.
+    persistSession: true,
+    storage: sessionStorage,
     detectSessionInUrl: true,
   },
 });
