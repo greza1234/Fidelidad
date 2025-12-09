@@ -1,47 +1,81 @@
+// src/pages/client/FidelityView.jsx
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 
 export default function FidelityView({ profile, points, requiredPoints }) {
-  // puntos que se muestran en pantalla (se actualizan en vivo)
+  const userId = profile?.id; // viene de la tabla profiles
   const [livePoints, setLivePoints] = useState(points ?? 0);
 
-  // si el padre cambia los puntos (carga inicial), sincronizamos
+  // Si el padre cambia los puntos (ej. al entrar por primera vez), sincronizamos
   useEffect(() => {
     if (typeof points === "number") {
       setLivePoints(points);
     }
   }, [points]);
 
-  // SUSCRIPCIÓN REALTIME a loyalty_cards de ESTE usuario
+  // 🔴 1) Realtime: intenta escuchar cambios en loyalty_cards de este usuario
   useEffect(() => {
-    if (!profile?.id) return;
-
-    const userId = profile.id;
+    if (!userId) return;
 
     const channel = supabase
       .channel(`loyalty_card_${userId}`)
       .on(
         "postgres_changes",
         {
-          event: "*", // o "UPDATE" si solo quieres updates
+          event: "*", // o "UPDATE" si quieres ser más específico
           schema: "public",
           table: "loyalty_cards",
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {
+          console.log("Realtime cambio en loyalty_cards:", payload);
           const row = payload.new;
           if (row && typeof row.current_stamps === "number") {
             setLivePoints(row.current_stamps);
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log("Estado canal Realtime:", status);
+      });
 
-    // limpiar la suscripción al desmontar
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [profile?.id]);
+  }, [userId]);
+
+  // 🔁 2) Refresco automático cada 4 segundos como respaldo
+  useEffect(() => {
+    if (!userId) return;
+
+    let cancelled = false;
+
+    const fetchCard = async () => {
+      const { data, error } = await supabase
+        .from("loyalty_cards")
+        .select("current_stamps")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error leyendo tarjeta en polling:", error);
+        return;
+      }
+
+      if (!cancelled && data && typeof data.current_stamps === "number") {
+        setLivePoints(data.current_stamps);
+      }
+    };
+
+    // primera carga + intervalos
+    fetchCard();
+    const intervalId = setInterval(fetchCard, 4000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(intervalId);
+    };
+  }, [userId]);
 
   // ── lógica de la tarjeta usando livePoints ──
   const filled = Math.min(livePoints, requiredPoints);
