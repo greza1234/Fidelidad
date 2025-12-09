@@ -273,9 +273,24 @@ export default function Login() {
       setError("No se pudo guardar tu perfil.");
       return;
     }
+    // Crear tarjeta de puntos automáticamente
+const { error: cardError } = await supabase
+  .from("loyalty_cards")
+  .insert({
+    user_id: user.id,
+    points: 0
+  });
+
+if (cardError) {
+  console.error("Error creando tarjeta:", cardError);
+  // No bloqueamos el registro, solo avisamos en consola.
+}
+
+
+
 
     // Ya está logueado, lo mandamos directo a cliente
-    navigate("/client", { replace: true });
+    await ensureProfileAndRedirect(user.id);
   };
 
   // ---------- Google ----------
