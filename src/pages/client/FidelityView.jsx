@@ -69,7 +69,7 @@ export default function FidelityView({ profile, points, requiredPoints }) {
 
     // primera carga + intervalos
     fetchCard();
-    const intervalId = setInterval(fetchCard, 4000);
+    const intervalId = setInterval(fetchCard, 2000);
 
     return () => {
       cancelled = true;

@@ -361,7 +361,7 @@ if (cardError) {
           className="auth-password-toggle"
           onClick={() => setShowPassLogin(!showPassLogin)}
         >
-          {showPassLogin ? EyeOffIcon : EyeIcon}
+          {showPassLogin ? EyeIcon : EyeOffIcon}
         </span>
       </div>
 
