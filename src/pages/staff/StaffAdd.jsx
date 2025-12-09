@@ -295,7 +295,7 @@ export default function StaffAdd() {
           disabled={saving}
           onClick={handleAddStamps}
         >
-          {saving ? "Guardando..." : "Deslizar para confirmar →"}
+          {saving ? "Guardando..." : "Enviar puntos →"}
         </button>
 
         {error && <p className="auth-error" style={{ marginTop: 8 }}>{error}</p>}
