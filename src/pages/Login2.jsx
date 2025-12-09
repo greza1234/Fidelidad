@@ -118,7 +118,7 @@ export default function Login() {
       return;
     }
 
-    // Si no hay perfil o le falta nombre o fecha, lo mandamos a completar (caso Google nuevo)
+    // Si no hay perfil o le falta nombre o fecha, lo mandamos a completar
     if (!profile || !profile.full_name || !profile.birth_date) {
       navigate("/complete-profile", { replace: true });
       return;
@@ -132,16 +132,31 @@ export default function Login() {
     }
   };
 
-  // Auto-redirect si ya hay sesión (por ejemplo después de Google)
+  // Auto-redirect si ya hay sesión (y escuchar cambios después de Google)
   useEffect(() => {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
       const session = data?.session;
-      if (!session) return;
-      await ensureProfileAndRedirect(session.user.id);
+      if (session) {
+        await ensureProfileAndRedirect(session.user.id);
+      }
     };
+
     checkSession();
-  }, []);
+
+    // Escuchar cambios de sesión (útil al volver de Google)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        ensureProfileAndRedirect(session.user.id);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []); // no ponemos navigate para que no se vuelva loco con StrictMode
 
   // ---------- LOGIN ----------
   const handleLogin = async (e) => {
@@ -270,7 +285,8 @@ export default function Login() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: window.location.origin + "/", // vuelve aquí; useEffect decide adónde ir
+        // 🚨 clave: SIEMPRE devolver al origen (localhost o vercel)
+        redirectTo: window.location.origin,
       },
     });
 
