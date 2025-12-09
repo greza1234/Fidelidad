@@ -1,7 +1,52 @@
+import { useEffect, useState } from "react";
+import { supabase } from "../../lib/supabaseClient";
+
 export default function FidelityView({ profile, points, requiredPoints }) {
-  const filled = Math.min(points, requiredPoints);
-  const remaining = Math.max(requiredPoints - points, 0);
-  const progress = Math.min((points / requiredPoints) * 100, 100);
+  // puntos que se muestran en pantalla (se actualizan en vivo)
+  const [livePoints, setLivePoints] = useState(points ?? 0);
+
+  // si el padre cambia los puntos (carga inicial), sincronizamos
+  useEffect(() => {
+    if (typeof points === "number") {
+      setLivePoints(points);
+    }
+  }, [points]);
+
+  // SUSCRIPCIÓN REALTIME a loyalty_cards de ESTE usuario
+  useEffect(() => {
+    if (!profile?.id) return;
+
+    const userId = profile.id;
+
+    const channel = supabase
+      .channel(`loyalty_card_${userId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*", // o "UPDATE" si solo quieres updates
+          schema: "public",
+          table: "loyalty_cards",
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          const row = payload.new;
+          if (row && typeof row.current_stamps === "number") {
+            setLivePoints(row.current_stamps);
+          }
+        }
+      )
+      .subscribe();
+
+    // limpiar la suscripción al desmontar
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [profile?.id]);
+
+  // ── lógica de la tarjeta usando livePoints ──
+  const filled = Math.min(livePoints, requiredPoints);
+  const remaining = Math.max(requiredPoints - livePoints, 0);
+  const progress = Math.min((livePoints / requiredPoints) * 100, 100);
 
   const displayName =
     profile.full_name && profile.full_name.trim().length > 0
@@ -17,7 +62,6 @@ export default function FidelityView({ profile, points, requiredPoints }) {
       <div className="loyalty-card">
         <div className="loyalty-card-header">
           <span className="loyalty-card-title">Visitas</span>
-          
         </div>
 
         <div className="loyalty-dots">
@@ -43,7 +87,7 @@ export default function FidelityView({ profile, points, requiredPoints }) {
         </div>
 
         <p className="loyalty-progress-text">
-          Tienes <strong>{points}</strong> de {requiredPoints}. Te faltan{" "}
+          Tienes <strong>{livePoints}</strong> de {requiredPoints}. Te faltan{" "}
           <strong>{remaining}</strong> para tu recompensa.
         </p>
       </div>
