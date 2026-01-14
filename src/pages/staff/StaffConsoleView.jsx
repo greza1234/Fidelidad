@@ -202,55 +202,7 @@ export default function StaffConsoleView() {
                 >
                   +1
                 </button>
-
-                <button
-                  onClick={() => updateVisits(c.id, +5)}
-                  disabled={busyId === c.id}
-                  style={{
-                    padding: "6px 10px",
-                    borderRadius: 10,
-                    border: "1px solid #e5e7eb",
-                    background: "#16a34a",
-                    color: "white",
-                    cursor: "pointer",
-                    fontWeight: 700,
-                  }}
-                  title="Sumar 5"
-                >
-                  +5
-                </button>
-
-                <input
-                  type="number"
-                  min="1"
-                  placeholder="+X"
-                  value={addMap[c.id] ?? ""}
-                  onChange={(e) => onAddInputChange(c.id, e.target.value)}
-                  style={{
-                    width: 70,
-                    padding: "6px 10px",
-                    borderRadius: 10,
-                    border: "1px solid #e5e7eb",
-                    outline: "none",
-                  }}
-                />
-
-                <button
-                  onClick={() => addCustom(c.id)}
-                  disabled={busyId === c.id}
-                  style={{
-                    padding: "6px 10px",
-                    borderRadius: 10,
-                    border: "1px solid #e5e7eb",
-                    background: "#111827",
-                    color: "white",
-                    cursor: "pointer",
-                    fontWeight: 700,
-                  }}
-                  title="Sumar X"
-                >
-                  OK
-                </button>
+  
               </div>
             </li>
           ))}

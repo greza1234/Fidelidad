@@ -30,8 +30,8 @@ export default function FidelityView({ profile, points, requiredPoints }) {
         (payload) => {
           console.log("Realtime cambio en loyalty_cards:", payload);
           const row = payload.new;
-          if (row && typeof row.current_stamps === "number") {
-            setLivePoints(row.current_stamps);
+          if (row && typeof row.total_visits === "number") {
+            setLivePoints(row.total_visits);
           }
         }
       )
@@ -62,8 +62,8 @@ export default function FidelityView({ profile, points, requiredPoints }) {
         return;
       }
 
-      if (!cancelled && data && typeof data.current_stamps === "number") {
-        setLivePoints(data.current_stamps);
+      if (!cancelled && data && typeof data.total_visits === "number") {
+        setLivePoints(data.total_visits);
       }
     };
 
