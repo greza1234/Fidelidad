@@ -3,17 +3,14 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 
 export default function FidelityView({ profile, points, requiredPoints }) {
-  const userId = profile?.id; // viene de la tabla profiles
+  const userId = profile?.id;
   const [livePoints, setLivePoints] = useState(points ?? 0);
 
-  // Si el padre cambia los puntos (ej. al entrar por primera vez), sincronizamos
   useEffect(() => {
-    if (typeof points === "number") {
-      setLivePoints(points);
-    }
+    if (typeof points === "number") setLivePoints(points);
   }, [points]);
 
-  // 🔴 1) Realtime: intenta escuchar cambios en loyalty_cards de este usuario
+  // ✅ Realtime: escucha cambios en total_visits
   useEffect(() => {
     if (!userId) return;
 
@@ -22,29 +19,26 @@ export default function FidelityView({ profile, points, requiredPoints }) {
       .on(
         "postgres_changes",
         {
-          event: "*", // o "UPDATE" si quieres ser más específico
+          event: "*",
           schema: "public",
           table: "loyalty_cards",
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {
-          console.log("Realtime cambio en loyalty_cards:", payload);
           const row = payload.new;
           if (row && typeof row.total_visits === "number") {
             setLivePoints(row.total_visits);
           }
         }
       )
-      .subscribe((status) => {
-        console.log("Estado canal Realtime:", status);
-      });
+      .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
   }, [userId]);
 
-  // 🔁 2) Refresco automático cada 4 segundos como respaldo
+  // ✅ Polling respaldo: lee total_visits
   useEffect(() => {
     if (!userId) return;
 
@@ -53,21 +47,17 @@ export default function FidelityView({ profile, points, requiredPoints }) {
     const fetchCard = async () => {
       const { data, error } = await supabase
         .from("loyalty_cards")
-        .select("current_stamps")
+        .select("total_visits")
         .eq("user_id", userId)
         .maybeSingle();
 
-      if (error) {
-        console.error("Error leyendo tarjeta en polling:", error);
-        return;
-      }
+      if (error) return console.error("Error leyendo tarjeta:", error);
 
       if (!cancelled && data && typeof data.total_visits === "number") {
         setLivePoints(data.total_visits);
       }
     };
 
-    // primera carga + intervalos
     fetchCard();
     const intervalId = setInterval(fetchCard, 2000);
 
@@ -77,7 +67,6 @@ export default function FidelityView({ profile, points, requiredPoints }) {
     };
   }, [userId]);
 
-  // ── lógica de la tarjeta usando livePoints ──
   const filled = Math.min(livePoints, requiredPoints);
   const remaining = Math.max(requiredPoints - livePoints, 0);
   const progress = Math.min((livePoints / requiredPoints) * 100, 100);
@@ -90,7 +79,6 @@ export default function FidelityView({ profile, points, requiredPoints }) {
   return (
     <>
       <h2 className="client-title">Hola, {displayName}</h2>
-
       <p className="client-subtitle">Aqui verás tus puntos de visita</p>
 
       <div className="loyalty-card">
@@ -114,10 +102,7 @@ export default function FidelityView({ profile, points, requiredPoints }) {
 
       <div className="loyalty-progress">
         <div className="loyalty-progress-bar">
-          <div
-            className="loyalty-progress-fill"
-            style={{ width: `${progress}%` }}
-          />
+          <div className="loyalty-progress-fill" style={{ width: `${progress}%` }} />
         </div>
 
         <p className="loyalty-progress-text">
