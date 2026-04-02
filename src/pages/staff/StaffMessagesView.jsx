@@ -15,6 +15,28 @@ export default function StaffMessagesView() {
   const [history, setHistory] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
 
+  // Función para eliminar una promoción
+  const handleDelete = async (id) => {
+    console.log("Eliminando promoción con ID:", id);  // Verifica que el ID es correcto
+
+    if (!window.confirm("¿Estás seguro de que deseas eliminar esta promoción?")) return;
+
+    // Intentar eliminar la promoción de Supabase
+    const { data, error } = await supabase.from("promotions").delete().eq("id", id);
+
+    if (error) {
+      console.error("Error eliminando promoción:", error);
+      setError("Error eliminando la promoción.");
+      return;
+    }
+
+    console.log("Promoción eliminada:", data);  // Verifica el resultado de la eliminación
+
+    setSuccess("¡Promoción eliminada correctamente!");
+    fetchHistory();  // Refrescar el historial después de la eliminación
+  };
+
+
   const fetchHistory = async () => {
     setLoadingHistory(true);
 
