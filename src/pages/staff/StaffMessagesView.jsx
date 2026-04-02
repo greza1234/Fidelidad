@@ -217,6 +217,21 @@ export default function StaffMessagesView() {
                   }}
                 />
               ) : null}
+              {/* Botón para eliminar la promoción */}
+            <button
+              onClick={() => handleDelete(p.id)}
+              style={{
+                marginTop: 10,
+                padding: "8px 12px",
+                backgroundColor: "#FF4D4D",
+                color: "white",
+                border: "none",
+                borderRadius: 5,
+                cursor: "pointer",
+              }}
+            >
+              Eliminar promoción
+            </button>
             </div>
           ))}
         </div>
