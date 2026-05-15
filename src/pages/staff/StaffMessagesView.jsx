@@ -206,16 +206,27 @@ export default function StaffMessagesView() {
       console.log("Respuesta envío de correos:", emailData);
 
       if (emailError) {
-        console.error(
-          "La promoción se guardó, pero falló el correo:",
-          emailError
-        );
+        console.error("Error invocando Edge Function:", emailError);
 
-        setSuccess(
-          "Promoción publicada, pero no se pudo enviar al Gmail de los clientes."
+        setSuccess("");
+        setError(
+          "La promoción se publicó, pero falló la conexión con la función de correos."
         );
+      } else if (!emailData?.ok || emailData?.sent === 0) {
+        console.error("Brevo no envió correos:", emailData);
+
+        const errorDetail =
+          emailData?.errors?.[0]?.result?.message ||
+          emailData?.errors?.[0]?.result?.code ||
+          emailData?.message ||
+          "Revisa la API key de Brevo, el remitente verificado o los correos de clientes.";
+
+        setSuccess("");
+        setError("La promoción se publicó, pero el correo no se envió: " + errorDetail);
       } else {
-        setSuccess("¡Promoción publicada y enviada al Gmail de los clientes!");
+        setSuccess(
+          `¡Promoción publicada y enviada al Gmail de ${emailData.sent} cliente(s)!`
+        );
       }
 
       // 4. Limpiar formulario
